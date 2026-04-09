@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Among Us P2.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="window">
+        <div class="header">
+            <span>NETWORK_CLIENT_04.exe</span>
+            <span>CONNECTED</span>
+        </div>
+
+        <div id="setup" style="padding: 20px;">
+            <h3>IDENTIFY YOURSELF</h3>
+            <input type="text" id="username" placeholder="NAME...">
+            <input type="text" id="room" placeholder="ENCRYPTION KEY (ROOM)...">
+            <button onclick="join()">CONNECT</button>
+        </div>
+
+        <div id="chat-ui" style="display:none;">
+            <div id="chat-box"></div>
+            <div class="input-area">
+                <input type="text" id="msg" placeholder="Type a message..." onkeypress="handleKey(event)">
+                <button onclick="send()">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentRoom = "";
+        let myName = "";
+
+        function join() {
+            myName = document.getElementById('username').value;
+            currentRoom = document.getElementById('room').value;
+            if (myName && currentRoom) {
+                socket.emit('join-room', { username: myName, room: currentRoom });
+                document.getElementById('setup').style.display = 'none';
+                document.getElementById('chat-ui').style.display = 'block';
+            }
+        }
+
+        function handleKey(e) {
+            if (e.key === 'Enter') send();
+        }
+
+        function send() {
+            const input = document.getElementById('msg');
+            if (input.value.trim() !== "") {
+                socket.emit('send-message', {
+                    username: myName,
+                    room: currentRoom,
+                    message: input.value
+                });
+                input.value = '';
+            }
+        }
+
+        socket.on('chat-message', (data) => {
+            const box = document.getElementById('chat-box');
+            const isSystem = data.username === 'SYSTEM';
+            box.innerHTML += `<p class="${isSystem ? 'system-msg' : ''}">
+                                <strong>${data.username}:</strong> ${data.message}
+                              </p>`;
+            box.scrollTop = box.scrollHeight;
+        });
+    </script>
+</body>
+
+</html>
