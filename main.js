@@ -15,7 +15,7 @@ function createWindow() {
 
     // Hier vertellen we Electron om je chat te laden
     // We gaan ervan uit dat je server draait op poort 3000
-    win.loadURL('http://localhost:3000');
+    win.loadURL('https://aup2-chatrooms.onrender.com');
 }
 
 app.whenReady().then(createWindow);
