@@ -30,6 +30,10 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('Server draait op http://localhost:3000');
+// Render geeft een poort via process.env.PORT, anders gebruiken we 3000
+const PORT = process.env.PORT || 3000;
+
+// '0.0.0.0' is cruciaal voor Render om de server bereikbaar te maken voor de buitenwereld
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server draait op poort ${PORT}`);
 });

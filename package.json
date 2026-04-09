@@ -5,7 +5,8 @@
   "author": "El Gatto",
   "main": "main.js",
   "scripts": {
-    "start": "node server.js & electron .",
+    "start": "node server.js",
+    "dev": "node server.js & electron .",
     "dist": "electron-builder"
   },
   "build": {
